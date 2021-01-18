@@ -10,6 +10,7 @@ build: minijava.jj jtb.jar
 
 typecheck: Typecheck.java
 		javac Typecheck.java
+		java Typecheck < P.java
 
 test: Typecheck.java
 	mkdir hw1
