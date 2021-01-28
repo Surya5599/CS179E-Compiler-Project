@@ -1,15 +1,16 @@
 import syntaxtree.*;
 import visitor.*;
+import typechecker.*;
 
 public class Typecheck {
-   public static void main(String [] args) {
+   public static void main(String[] args) {
       try {
-         Node root = new MiniJavaParser(System.in).Goal();
-         System.out.println("Program parsed successfully");
-         root.accept(new GJNoArguDepthFirst());
-      }
-      catch (ParseException e) {
-         System.out.println(e.toString());
+         new MiniJavaParser(System.in);
+         Node root = MiniJavaParser.Goal();
+         root.accept(new FirstVisitor());
+         System.out.println("Program type checked successfully");
+      } catch (ParseException e) {
+         System.out.println("Type error");
       }
    }
 }
