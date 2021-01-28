@@ -36,8 +36,9 @@ public class FirstVisitor extends DepthFirstVisitor {
   }
 
   public void visit(MainClass n) {
-
-    //CHECK IF ALL ID ARE DIFFERENT need a function that has a NodeList of Identifier and check if they all different /there is already a identifier name there 
+    //DONT DO NOW
+    //CHECK IF ALL ID ARE DIFFERENT need a function that has a NodeList of Identifier 
+    //and check if they all different /there is already a identifier name there  
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
@@ -47,8 +48,9 @@ public class FirstVisitor extends DepthFirstVisitor {
   }
 
   public void visit(ClassDeclaration n) {
-    //check all ID are different Use same function 
-    //check if all methods are different
+    //check all ID are different Use same function  n.f3
+    //check if all methods are different     n.f4
+    
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
@@ -57,16 +59,17 @@ public class FirstVisitor extends DepthFirstVisitor {
   }
 
   public void visit(ClassExtendsDeclaration n) {
-    //check all ID are different use same function 
-    //check if all methods are different  //Method Declaration distinct
+    //check all ID are different use same function n.f5
+    //check if all methods are different  //Method Declaration distinct n.f6
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
+
   }
 
   public void visit(MethodDeclaration n) {
-    // check if all parameters are different named
-    // check if all variables inside are different named
+    // check if all parameters are different named  n.f4
+    // check if all variables inside are different named  n.f6
     currClass.addMethod(Helper.methodName(n), Helper.methodType(n));
     currMethod = currClass.getMethod(Helper.methodName(n));
     n.f7.accept(this);

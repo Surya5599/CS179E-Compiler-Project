@@ -31,6 +31,10 @@ public class Helper {
 		return nameOfClass;
 	}
 
+	// public static MethodDistinct(NodeList names){
+	// 	{MethodDeclaration, MethodDeclaration, MethodDeclaration, MethodDeclaration, MethodDeclaration}
+	// }
+
 	public static String methodName(MethodDeclaration method) {// helper function methodName return
 		return method.f2.f0.toString();
 	}
