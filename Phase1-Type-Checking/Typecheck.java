@@ -7,7 +7,8 @@ public class Typecheck {
       try {
          new MiniJavaParser(System.in);
          Node root = MiniJavaParser.Goal();
-         root.accept(new FirstVisitor());
+         FirstVisitor ft = new FirstVisitor();
+         root.accept(ft);
          System.out.println("Program type checked successfully");
       } catch (ParseException e) {
          System.out.println("Type error");

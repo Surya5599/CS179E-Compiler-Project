@@ -31,8 +31,31 @@ public class Helper {
 		return nameOfClass;
 	}
 
-	/*
-	 * public string methodName(Node method) {// helper function methodName return
-	 * ((MethodDeclaration)method).f2.f0.toString(); }
-	 */
+	public static String methodName(MethodDeclaration method) {// helper function methodName return
+		return method.f2.f0.toString();
+	}
+
+	public static String methodType(MethodDeclaration method) {// helper function methodName return
+		return getIntegerType((IntegerType) method.f1.f0.choice);
+	}
+
+	public static String getIntegerType(IntegerType integer) {// helper function methodName return
+		return integer.f0.toString();
+	}
+
+	public static String getId(Identifier id) {// helper function methodName return
+		return id.f0.toString();
+	}
+
+	public static String getType(Type t) {// helper function methodName return
+		Node x = t.f0.choice;
+		String typename = "";
+		if (x instanceof IntegerType) {
+			typename = ((IntegerType) x).f0.toString();
+		} else if (x instanceof BooleanType) {
+			typename = ((BooleanType) x).f0.toString();
+		}
+		return typename;
+	}
+
 }
