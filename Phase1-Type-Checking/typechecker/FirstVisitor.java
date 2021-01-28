@@ -20,9 +20,7 @@ public class FirstVisitor extends DepthFirstVisitor {
 
   public void visit(Goal n) {
 
-    // check if all classes have different name
-    // if(all clases different named){
-    NodeList classNames = new NodeList(n.f0); // starts with the main class in it
+    NodeList classNames = new NodeList(n.f0);
     if (n.f1.size() > 0) {
       for (int i = 0; i < n.f1.size(); i++) {
         classNames.addNode(((TypeDeclaration) n.f1.elementAt(i)).f0.choice);
@@ -39,7 +37,7 @@ public class FirstVisitor extends DepthFirstVisitor {
 
   public void visit(MainClass n) {
 
-    //CHECK IF ALL ID ARE DIFFERENT
+    //CHECK IF ALL ID ARE DIFFERENT need a function that has a NodeList of Identifier and check if they all different /there is already a identifier name there 
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
@@ -49,7 +47,7 @@ public class FirstVisitor extends DepthFirstVisitor {
   }
 
   public void visit(ClassDeclaration n) {
-    //check all ID are different
+    //check all ID are different Use same function 
     //check if all methods are different
     String cname = Helper.className(n);
     st.addClass(cname);
@@ -59,8 +57,8 @@ public class FirstVisitor extends DepthFirstVisitor {
   }
 
   public void visit(ClassExtendsDeclaration n) {
-    //check all ID are different
-    //check if all methods are different
+    //check all ID are different use same function 
+    //check if all methods are different  //Method Declaration distinct
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
