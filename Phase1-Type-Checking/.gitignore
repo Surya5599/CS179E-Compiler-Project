@@ -1,0 +1,7 @@
+syntaxtree/
+visitor/
+*.java
+!Typecheck.java
+../.vscode/
+.vscode/
+../Phase1Tester/

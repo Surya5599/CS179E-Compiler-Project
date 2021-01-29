@@ -1,15 +1,14 @@
 class Main {
 	public static void main(String[] a) {
-		int w;
-		int x;
-		int y;
-		int z;
-		System.out.println(new A().run());
+		System.out.println(new A().run(3));
 	}
 }
 
+
+
 class A {
-	public int run() {
+	int z;
+	public int run(int w) {
 		int x;
 		x = 1;
 		return x;
