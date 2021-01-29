@@ -2,7 +2,9 @@ syntaxtree/
 visitor/
 *.java
 !Typecheck.java
+!P.java
 ../.vscode/
 .vscode/
 ../Phase1Tester/
 *.class
+*.out.jj
