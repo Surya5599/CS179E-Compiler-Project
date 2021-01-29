@@ -31,9 +31,56 @@ public class Helper {
 		return nameOfClass;
 	}
 
-	// public static MethodDistinct(NodeList names){
-	// 	{MethodDeclaration, MethodDeclaration, MethodDeclaration, MethodDeclaration, MethodDeclaration}
-	// }
+	public static boolean MethodDistinct(NodeListOptional names){
+		Set<String> distinct = new HashSet<>();
+		
+		for(int j = 0; j < names.size(); j++){
+			String methodName = Helper.methodName((MethodDeclaration) names.elementAt(j));
+			if(distinct.contains(methodName)){
+				return false;
+			}
+			else{
+				distinct.add(methodName);
+			}
+		}
+		return true;
+	}
+
+	public static boolean idDistinct(NodeListOptional ids){
+		Set<String> distinct = new HashSet<>();
+		
+		for(int j = 0; j < ids.size(); j++){
+			String methodName = Helper.getId(((VarDeclaration) ids.elementAt(j)).f1);
+			if(distinct.contains(methodName)){
+				return false;
+			}
+			else{
+				distinct.add(methodName);
+			}
+		}
+		return true;
+	}
+
+
+	public static boolean parameterDistinct(FormalParameterList params){
+		FormalParameter fp = params.f0; //there will def be one parameter
+		NodeListOptional nlo = params.f1; // more than one is optional therefore we have a nodeListoptional..ithink
+
+		Set<String> distinct = new HashSet<>();
+		distinct.add(getId(fp.f1)); //fp.f1 is an identifer
+
+		for(int i = 0; i < nlo.size(); i++){
+			String paraName = Helper.getId(((FormalParameterRest) nlo.elementAt(i)).f1.f1); 
+			if(distinct.contains(paraName)){
+				return false;
+			}
+			else{
+				distinct.add(paraName);
+			}
+		}	
+		return true;
+
+	}
 
 	public static String methodName(MethodDeclaration method) {// helper function methodName return
 		return method.f2.f0.toString();

@@ -9,13 +9,15 @@ class Main {
 }
 
 class A {
-	public int run() {
-		int x;
-		x = 1;
-		return x;
+	int x ;
+	int yt;
+	public int run(int para1, int para2) {
+		int insidevar;
+		insidevar = 1;
+		return insidevar;
 	}
 
-	public int stop() {
+	public int pk() {
 		int x;
 		x = 1;
 		return x;
