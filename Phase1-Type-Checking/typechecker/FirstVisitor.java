@@ -50,7 +50,12 @@ public class FirstVisitor extends DepthFirstVisitor {
   public void visit(ClassDeclaration n) {
     //check all ID are different Use same function  n.f3
     //check if all methods are different     n.f4
-    
+    if(Helper.idDistinct(n.f3)){
+      n.f3.accept(this);
+    }
+    if(Helper.MethodDistinct(n.f4)){
+      n.f4.accept(this);
+    }
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
@@ -61,6 +66,12 @@ public class FirstVisitor extends DepthFirstVisitor {
   public void visit(ClassExtendsDeclaration n) {
     //check all ID are different use same function n.f5
     //check if all methods are different  //Method Declaration distinct n.f6
+    if(Helper.idDistinct(n.f5)){
+      n.f5.accept(this);
+    }
+    if(Helper.MethodDistinct(n.f6)){
+      n.f6.accept(this);
+    }
     String cname = Helper.className(n);
     st.addClass(cname);
     currClass = st.getClass(cname);
@@ -70,6 +81,12 @@ public class FirstVisitor extends DepthFirstVisitor {
   public void visit(MethodDeclaration n) {
     // check if all parameters are different named  n.f4
     // check if all variables inside are different named  n.f6
+    if(Helper.parameterDistinct((FormalParameterList) n.f4.node)){ 
+      n.f4.accept(this);
+    }
+    if(Helper.idDistinct(n.f7)){
+      n.f6.accept(this);
+    }
     currClass.addMethod(Helper.methodName(n), Helper.methodType(n));
     currMethod = currClass.getMethod(Helper.methodName(n));
     n.f7.accept(this);

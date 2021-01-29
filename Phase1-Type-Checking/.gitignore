@@ -5,3 +5,4 @@ visitor/
 ../.vscode/
 .vscode/
 ../Phase1Tester/
+*.class

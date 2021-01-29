@@ -14,7 +14,7 @@ class A {
 		return x;
 	}
 
-	public int stop() {
+	public int pk() {
 		int x;
 		x = 1;
 		return x;
