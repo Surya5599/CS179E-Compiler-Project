@@ -1,5 +1,4 @@
 import syntaxtree.*;
-import visitor.*;
 import typechecker.*;
 
 public class Typecheck {
@@ -9,10 +8,24 @@ public class Typecheck {
          Node root = MiniJavaParser.Goal();
          FirstVisitor ft = new FirstVisitor();
          root.accept(ft);
-         
-         System.out.println("Program type checked successfully");
+         if (ft.getErrors() == true) {
+            System.out.println("Type error");
+            System.exit(1);
+         } else {
+            SecondVisitor sv = new SecondVisitor(ft.getSymbolTable());
+            root.accept(sv, ft.getSymbolTable());
+            if(sv.getErrors() == true){
+               System.out.println("Type error");
+               System.exit(1);
+            }
+            else{
+               System.out.println("Program type checked successfully");
+            }
+            
+         }
       } catch (ParseException e) {
          System.out.println("Type error");
+         System.exit(1);
       }
    }
 }

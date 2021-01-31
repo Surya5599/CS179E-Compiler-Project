@@ -87,7 +87,7 @@ public class Helper {
 	}
 
 	public static String methodType(MethodDeclaration method) {// helper function methodName return
-		return getIntegerType((IntegerType) method.f1.f0.choice);
+		return getType(method.f1);
 	}
 
 	public static String getIntegerType(IntegerType integer) {// helper function methodName return
@@ -98,6 +98,10 @@ public class Helper {
 		return id.f0.toString();
 	}
 
+	public static int getListSize(Node n){
+		return ((ExpressionList)n).f1.size() + 1;
+	}
+
 	public static String getType(Type t) {// helper function methodName return
 		Node x = t.f0.choice;
 		String typename = "";
@@ -105,6 +109,12 @@ public class Helper {
 			typename = ((IntegerType) x).f0.toString();
 		} else if (x instanceof BooleanType) {
 			typename = ((BooleanType) x).f0.toString();
+		}
+		else if(x instanceof ArrayType){
+			typename = "int []";
+		}
+		else if (x instanceof Identifier){
+			typename = getId((Identifier)x);
 		}
 		return typename;
 	}

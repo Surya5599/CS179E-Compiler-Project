@@ -15,6 +15,7 @@ typecheck: Typecheck.java
 test: Typecheck.java
 	mkdir hw1
 	cp Typecheck.java hw1/
+	cp -R typechecker/ hw1/typechecker
 	tar zcf hw1.tgz hw1/
 	rm -rf hw1
 	chmod +x Phase1Tester/run
@@ -24,3 +25,4 @@ clean:
 			rm -rf *.class
 			rm -rf *.tgz
 			rm -rf Phase1Tester/Output
+			rm -rf typechecker/*.class
