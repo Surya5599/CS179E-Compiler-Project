@@ -1,5 +1,8 @@
 package typechecker;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import syntaxtree.*;
 import visitor.*;
 
@@ -7,7 +10,7 @@ class ErrorMsg {
   boolean anyErrors;
   void complain(String msg) {
     anyErrors = true;
-    System.out.println(msg);
+    //System.out.println(msg);
   }
 }
 
@@ -82,16 +85,24 @@ public class FirstVisitor extends DepthFirstVisitor {
     st.addClass(cname);
     currClass = st.getClass(cname);
     currMethod = null;
-    if (Helper.idDistinct(n.f5)) {
-      n.f5.accept(this);
+    String superClass = Helper.getId(n.f3);
+    ClassSymbol super_class = st.getClass(superClass);
+    Set<String> super_methods = super_class.getMethodNames();
+    if(Helper.noOverloading(super_methods, n.f6)){
+      if (Helper.idDistinct(n.f5)) {
+        n.f5.accept(this);
+      } else {
+        error.complain("ID names are same");
+      }
+      if (Helper.MethodDistinct(n.f6)) {
+        n.f6.accept(this);
+      } else {
+        error.complain("Method names are same");
+      }
     } else {
-      error.complain("ID names are same");
+      error.complain("Overloaded method");
     }
-    if (Helper.MethodDistinct(n.f6)) {
-      n.f6.accept(this);
-    } else {
-      error.complain("Method names are same");
-    }
+    
     
 
   }

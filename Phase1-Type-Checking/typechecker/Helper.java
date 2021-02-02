@@ -61,6 +61,16 @@ public class Helper {
 		return true;
 	}
 
+	public static boolean noOverloading(Set<String> s, NodeListOptional n){
+		for(int j = 0; j < n.size(); j++){
+			String methodName = Helper.methodName((MethodDeclaration) n.elementAt(j));
+			if(s.contains(methodName)){
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	public static boolean parameterDistinct(FormalParameterList params){
 		FormalParameter fp = params.f0; //there will def be one parameter

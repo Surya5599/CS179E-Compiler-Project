@@ -1,6 +1,7 @@
 package typechecker;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class ClassSymbol {
 	private Symbol name;
@@ -21,7 +22,7 @@ public class ClassSymbol {
 		this.methods.put(name, new MethodSymbol(name, type));
 	}
 
-	public void addFields(String name, String type){
+	public void addFields(String name, String type) {
 		this.fields.put(Symbol.symbol(name), type);
 	}
 
@@ -29,8 +30,16 @@ public class ClassSymbol {
 		return this.methods.get(name);
 	}
 
-	public String getField(String name){
+	public String getField(String name) {
 		return this.fields.get(Symbol.symbol(name));
+	}
+
+	public int methodSize() {
+		return methods.size();
+	}
+
+	public Set<String> getMethodNames() {
+		return methods.keySet();
 	}
 
 }
