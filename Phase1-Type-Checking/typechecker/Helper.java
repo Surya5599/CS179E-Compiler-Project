@@ -65,7 +65,7 @@ public class Helper {
 		for(int j = 0; j < n.size(); j++){
 			String methodName = Helper.methodName((MethodDeclaration) n.elementAt(j));
 			if(s.contains(methodName)){
-				return false;
+				return true;
 			}
 		}
 		return true;
