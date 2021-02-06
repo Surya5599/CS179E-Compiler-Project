@@ -6,13 +6,17 @@ public class ClassSymbol {
 	private Symbol name;
 	private HashMap<Symbol, String> fields;
 	private HashMap<String, MethodSymbol> methods;
-	private List<String> vTable;
+	//private List<String> vTable;
+	private LinkedHashMap<String, Integer> vTable; 
+	private Integer value;
 
 	public ClassSymbol(String n) {
 		name = Symbol.symbol(n);
 		fields = new HashMap<Symbol, String>();
 		methods = new HashMap<String, MethodSymbol>();
-		this.vTable = new ArrayList<String>();
+		//this.vTable = new ArrayList<String>();
+		this.vTable = new LinkedHashMap<String,Integer>();
+		value = 0; 
 	}
 
 	public String getClassId() {
@@ -21,10 +25,24 @@ public class ClassSymbol {
 
 	public void addMethod(String name, String type) {
 		this.methods.put(name, new MethodSymbol(name, type));
-		vTable.add(name);
+		//vTable.add(name);
+		value = value + 4; 
+		vTable.put(name,value);
+	}
+	
+	public Integer getValue(String name){
+		Integer val = 0; 
+		if(vTable.containsKey(name)){
+			val = vTable.get(name);
+		}
+		return val;
 	}
 
-	public List<String> getvTable(){
+	// public List<String> getvTable(){
+	// 	return vTable;
+	// }
+
+	public LinkedHashMap<String, Integer> getvTable(){
 		return vTable;
 	}
 
