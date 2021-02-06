@@ -1,0 +1,6 @@
+
+func Main()
+ var.0 = Add(12 21)
+ PrintIntS(var.0)
+ ret
+
