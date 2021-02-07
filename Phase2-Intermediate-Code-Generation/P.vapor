@@ -1,6 +1,299 @@
+const vmt_BBS
+ :BBS.Start
+ :BBS.Sort
+ :BBS.Print
+ :BBS.Init
+
 
 func Main()
- var.0 = Add(12 21)
- PrintIntS(var.0)
- ret
+ t.0 = HeapAllocZ(12)
+ [t.0] = :vmt_BBS
+ if t.0 goto :null0
+  Error("null pointer")
+ null0:
+ t.1 = [t.0]
+ t.1 = [t.1+0]
+ t.2 = call t.1(t.0 10)
+ PrintIntS(t.2)
+ ret 
 
+func BBS.Start(this sz)
+ if this goto :null1
+  Error("null pointer")
+ null1:
+ t.0 = [this]
+ t.0 = [t.0+12]
+ t.1 = call t.0(this sz)
+ aux01 = t.1
+ if this goto :null2
+  Error("null pointer")
+ null2:
+ t.2 = [this]
+ t.2 = [t.2+8]
+ t.3 = call t.2(this)
+ aux01 = t.3
+ PrintIntS(99999)
+ if this goto :null3
+  Error("null pointer")
+ null3:
+ t.4 = [this]
+ t.4 = [t.4+4]
+ t.5 = call t.4(this)
+ aux01 = t.5
+ if this goto :null4
+  Error("null pointer")
+ null4:
+ t.6 = [this]
+ t.6 = [t.6+8]
+ t.7 = call t.6(this)
+ aux01 = t.7
+ ret 0
+
+func BBS.Sort(this)
+ t.0 = [this+8]
+ t.1 = Sub(t.0 1)
+ i = t.1
+ t.2 = Sub(0 1)
+ aux02 = t.2
+ while0_top:
+ t.3 = LtS(aux02 i)
+ if0 t.3 goto :while0_end
+  j = 1
+  while1_top:
+  t.4 = Add(i 1)
+  t.5 = LtS(j t.4)
+  if0 t.5 goto :while1_end
+   t.6 = Sub(j 1)
+   aux07 = t.6
+   t.7 = [this+4]
+   s = [t.7]
+   ok = Lt(aux07 s)
+   if ok goto :Label1
+   Error("array index out of bounds")
+   Label1: o =  MulS(aux07 4)
+   d = Add(t.7 o)
+   t.8 = [d+4]
+   aux04 = t.8
+   t.9 = [this+4]
+   s = [t.9]
+   ok = Lt(j s)
+   if ok goto :Label2
+   Error("array index out of bounds")
+   Label2: o =  MulS(j 4)
+   d = Add(t.9 o)
+   t.10 = [d+4]
+   aux05 = t.10
+   t.11 = LtS(aux05 aux04)
+   if0 t.11 goto :if0_else
+    t.12 = Sub(j 1)
+    aux06 = t.12
+    t.13 = [this+4]
+    s = [t.13]
+    ok = Lt(aux06 s)
+    if ok goto :Label3
+    Error("array index out of bounds")
+    Label3: o =  MulS(aux06 4)
+    d = Add(t.13 o)
+    t.14 = [d+4]
+    t = t.14
+    t.15 = [this+4]
+    s = [t.15]
+    ok = LtS(aux06 s)
+    if ok goto :Label4
+    Error("array index out of bounds")
+    Label4: ok = LtS(-1 aux06)
+    if ok goto :Label5
+    Error("array index out of bounds")
+    Label5: o =  MulS(aux06 4)
+    t.16 = [this+4]
+    t.17 = Add(t.16 o)
+    t.18 = [this+4]
+    s = [t.18]
+    ok = Lt(j s)
+    if ok goto :Label6
+    Error("array index out of bounds")
+    Label6: o =  MulS(j 4)
+    d = Add(t.18 o)
+    t.19 = [d+4]
+    [t.17+4] = t.19
+    t.20 = [this+4]
+    s = [t.20]
+    ok = LtS(j s)
+    if ok goto :Label7
+    Error("array index out of bounds")
+    Label7: ok = LtS(-1 j)
+    if ok goto :Label8
+    Error("array index out of bounds")
+    Label8: o =  MulS(j 4)
+    t.21 = [this+4]
+    t.22 = Add(t.21 o)
+    [t.22+4] = t
+    goto :if0_end
+   if0_else:
+    nt = 0
+   if0_end:
+   t.23 = Add(j 1)
+   j = t.23
+   goto :while1_top
+  while1_end:
+  PrintIntS(100000)
+  PrintIntS(j)
+  t.24 = Sub(i 1)
+  i = t.24
+  goto :while0_top
+ while0_end:
+ ret 0
+
+func BBS.Print(this)
+ j = 0
+ while2_top:
+ t.0 = [this+8]
+ t.1 = LtS(j t.0)
+ if0 t.1 goto :while2_end
+  t.2 = [this+4]
+  s = [t.2]
+  ok = Lt(j s)
+  if ok goto :Label9
+  Error("array index out of bounds")
+  Label9: o =  MulS(j 4)
+  d = Add(t.2 o)
+  t.3 = [d+4]
+  PrintIntS(t.3)
+  t.4 = Add(j 1)
+  j = t.4
+  goto :while2_top
+ while2_end:
+ ret 0
+
+func BBS.Init(this sz)
+ [this+8] = sz
+ t.0 = call :AllocArray(sz)
+ [this+4] = t.0
+ t.1 = [this+4]
+ s = [t.1]
+ ok = LtS(0 s)
+ if ok goto :Label10
+ Error("array index out of bounds")
+ Label10: ok = LtS(-1 0)
+ if ok goto :Label11
+ Error("array index out of bounds")
+ Label11: o =  MulS(0 4)
+ t.2 = [this+4]
+ t.3 = Add(t.2 o)
+ [t.3+4] = 20
+ t.4 = [this+4]
+ s = [t.4]
+ ok = LtS(1 s)
+ if ok goto :Label12
+ Error("array index out of bounds")
+ Label12: ok = LtS(-1 1)
+ if ok goto :Label13
+ Error("array index out of bounds")
+ Label13: o =  MulS(1 4)
+ t.5 = [this+4]
+ t.6 = Add(t.5 o)
+ [t.6+4] = 7
+ t.7 = [this+4]
+ s = [t.7]
+ ok = LtS(2 s)
+ if ok goto :Label14
+ Error("array index out of bounds")
+ Label14: ok = LtS(-1 2)
+ if ok goto :Label15
+ Error("array index out of bounds")
+ Label15: o =  MulS(2 4)
+ t.8 = [this+4]
+ t.9 = Add(t.8 o)
+ [t.9+4] = 12
+ t.10 = [this+4]
+ s = [t.10]
+ ok = LtS(3 s)
+ if ok goto :Label16
+ Error("array index out of bounds")
+ Label16: ok = LtS(-1 3)
+ if ok goto :Label17
+ Error("array index out of bounds")
+ Label17: o =  MulS(3 4)
+ t.11 = [this+4]
+ t.12 = Add(t.11 o)
+ [t.12+4] = 18
+ t.13 = [this+4]
+ s = [t.13]
+ ok = LtS(4 s)
+ if ok goto :Label18
+ Error("array index out of bounds")
+ Label18: ok = LtS(-1 4)
+ if ok goto :Label19
+ Error("array index out of bounds")
+ Label19: o =  MulS(4 4)
+ t.14 = [this+4]
+ t.15 = Add(t.14 o)
+ [t.15+4] = 2
+ t.16 = [this+4]
+ s = [t.16]
+ ok = LtS(5 s)
+ if ok goto :Label20
+ Error("array index out of bounds")
+ Label20: ok = LtS(-1 5)
+ if ok goto :Label21
+ Error("array index out of bounds")
+ Label21: o =  MulS(5 4)
+ t.17 = [this+4]
+ t.18 = Add(t.17 o)
+ [t.18+4] = 11
+ t.19 = [this+4]
+ s = [t.19]
+ ok = LtS(6 s)
+ if ok goto :Label22
+ Error("array index out of bounds")
+ Label22: ok = LtS(-1 6)
+ if ok goto :Label23
+ Error("array index out of bounds")
+ Label23: o =  MulS(6 4)
+ t.20 = [this+4]
+ t.21 = Add(t.20 o)
+ [t.21+4] = 6
+ t.22 = [this+4]
+ s = [t.22]
+ ok = LtS(7 s)
+ if ok goto :Label24
+ Error("array index out of bounds")
+ Label24: ok = LtS(-1 7)
+ if ok goto :Label25
+ Error("array index out of bounds")
+ Label25: o =  MulS(7 4)
+ t.23 = [this+4]
+ t.24 = Add(t.23 o)
+ [t.24+4] = 9
+ t.25 = [this+4]
+ s = [t.25]
+ ok = LtS(8 s)
+ if ok goto :Label26
+ Error("array index out of bounds")
+ Label26: ok = LtS(-1 8)
+ if ok goto :Label27
+ Error("array index out of bounds")
+ Label27: o =  MulS(8 4)
+ t.26 = [this+4]
+ t.27 = Add(t.26 o)
+ [t.27+4] = 19
+ t.28 = [this+4]
+ s = [t.28]
+ ok = LtS(9 s)
+ if ok goto :Label28
+ Error("array index out of bounds")
+ Label28: ok = LtS(-1 9)
+ if ok goto :Label29
+ Error("array index out of bounds")
+ Label29: o =  MulS(9 4)
+ t.29 = [this+4]
+ t.30 = Add(t.29 o)
+ [t.30+4] = 5
+ ret 0
+
+func AllocArray(size)
+ bytes = MulS(size 4)
+ bytes = Add(bytes 4)
+ v = HeapAllocZ(bytes)
+ [v] = size
+ ret v

@@ -6,9 +6,10 @@ public class ClassSymbol {
 	private Symbol name;
 	private HashMap<Symbol, String> fields;
 	private HashMap<String, MethodSymbol> methods;
-	//private List<String> vTable;
 	private LinkedHashMap<String, Integer> vTable; 
-	private Integer value;
+	private Integer offset;
+	private LinkedHashMap<String, Integer> record; 
+	private Integer recordOffset;
 
 	public ClassSymbol(String n) {
 		name = Symbol.symbol(n);
@@ -16,7 +17,9 @@ public class ClassSymbol {
 		methods = new HashMap<String, MethodSymbol>();
 		//this.vTable = new ArrayList<String>();
 		this.vTable = new LinkedHashMap<String,Integer>();
-		value = 0; 
+		this.record = new LinkedHashMap<String,Integer>();
+		offset = 0; 
+		recordOffset = 4;
 	}
 
 	public String getClassId() {
@@ -26,11 +29,11 @@ public class ClassSymbol {
 	public void addMethod(String name, String type) {
 		this.methods.put(name, new MethodSymbol(name, type));
 		//vTable.add(name);
-		value = value + 4; 
-		vTable.put(name,value);
+		vTable.put(name,offset);
+		offset = offset + 4; 
 	}
 	
-	public Integer getValue(String name){
+	public Integer getOffset(String name){
 		Integer val = 0; 
 		if(vTable.containsKey(name)){
 			val = vTable.get(name);
@@ -38,16 +41,25 @@ public class ClassSymbol {
 		return val;
 	}
 
-	// public List<String> getvTable(){
-	// 	return vTable;
-	// }
-
 	public LinkedHashMap<String, Integer> getvTable(){
 		return vTable;
 	}
 
 	public void addFields(String name, String type) {
 		this.fields.put(Symbol.symbol(name), type);
+		record.put(name, recordOffset);
+		recordOffset = recordOffset + 4;
+	}
+
+	public boolean checkRecord(String name){
+		if(record.containsKey(name)){
+			return true;
+		}
+		return false;
+	}
+
+	public Integer getRecordOffset(String name){
+		return record.get(name);
 	}
 
 	public MethodSymbol getMethod(String name) {
@@ -62,8 +74,12 @@ public class ClassSymbol {
 		return methods.size();
 	}
 
+	public int fieldSize(){
+		return fields.size();
+	}
+
 	public Set<String> getMethodNames() {
-		return methods.keySet();
+		return vTable.keySet();
 	}
 
 }
