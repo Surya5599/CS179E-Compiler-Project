@@ -41,6 +41,25 @@ public class ClassSymbol {
 		return val;
 	}
 
+	public HashMap<Symbol, String> getFields(){
+		return this.fields;
+	}
+
+	public void setFields(HashMap<Symbol, String> s){
+		this.fields = s;
+	}
+
+	public LinkedHashMap<String, Integer> getRecord(){
+		return this.record;
+	}
+	
+	public int recordSize(){
+		return record.size();
+	}
+	public void SetRecord(LinkedHashMap<String, Integer> r){
+		this.record = r;
+	}
+
 	public LinkedHashMap<String, Integer> getvTable(){
 		return vTable;
 	}

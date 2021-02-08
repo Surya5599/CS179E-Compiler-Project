@@ -256,6 +256,11 @@ public class Printer {
 	}
 
 	public String functionCall(String cVar, int offset, String param){
+		if(cVar.contains("this+")){
+			String v = createVar();
+			print(v + " = " + cVar);
+			cVar = v;
+		}
 		print("if " + cVar + " goto :null" + nullLabel);
 		this.depth++;
 		print("Error(\"null pointer\")");

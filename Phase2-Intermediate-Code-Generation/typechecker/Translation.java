@@ -50,6 +50,13 @@ public class Translation extends GJNoArguDepthFirst<String>{
 		return null;
 	}
 
+	public String visit(ClassExtendsDeclaration n){
+		currClass = stable.getClass(n.f1.accept(this));
+		n.f5.accept(this);
+		n.f6.accept(this);
+		return null;
+	}
+
 	public String visit(MethodDeclaration n){
 		String className = currClass.getClassId();
 		String mName = n.f2.accept(this);
@@ -66,6 +73,7 @@ public class Translation extends GJNoArguDepthFirst<String>{
 		//printer.function();
 		return null;
 	}
+
 
 	public String visit(Identifier n){
 		return n.f0.toString();
@@ -131,6 +139,7 @@ public class Translation extends GJNoArguDepthFirst<String>{
 		}
 		String methodName = n.f2.accept(this);
 		String param = n.f4.accept(this);
+		cVar = recordCheck(cVar);
 		String finalVar = printer.functionCall(cVar, cs.getOffset(methodName), param);
 		return finalVar;
 	}
@@ -161,7 +170,7 @@ public class Translation extends GJNoArguDepthFirst<String>{
 	}
 
 	public String visit(AllocationExpression n){
-		return printer.allocation(n.f1.accept(this), stable.getClass(n.f1.accept(this)).fieldSize());
+		return printer.allocation(n.f1.accept(this), stable.getClass(n.f1.accept(this)).recordSize());
 	}
 
 	public String visit(FormalParameterList n){

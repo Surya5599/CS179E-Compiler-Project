@@ -86,6 +86,8 @@ public class FirstVisitor extends DepthFirstVisitor {
     currMethod = null;
     String superClass = Helper.getId(n.f3);
     ClassSymbol super_class = st.getClass(superClass);
+    currClass.SetRecord(super_class.getRecord());
+    currClass.setFields(super_class.getFields());
     Set<String> super_methods = super_class.getMethodNames();
     if(Helper.noOverloading(super_methods, n.f6)){
       if (Helper.idDistinct(n.f5)) {
