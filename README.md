@@ -2,6 +2,7 @@
 Surya Singh
 ssing
 862033627
+
 Neha Gupta
 ngupt
 862049507
@@ -27,15 +28,21 @@ the GJDepthFirst visitor in order to type check statements and expressions.
 ## Project Overview and File Structure
 
 ● **Typecheck.java** ​- Main file which calls two of the parts in order to typecheck a java file.
+
 Created a package typechecker which holds inside:
-● **FirstVisitor.java** ​- This is part 1 which extends the DepthFirstVisitor to create Symbol
-Table
-● **SecondVisitor.java** ​- This is the second part which extends GJDepthFirstVisitor to type
-check statements.
+
+● **FirstVisitor.java** ​- This is part 1 which extends the DepthFirstVisitor to create SymbolTable
+
+● **SecondVisitor.java** ​- This is the second part which extends GJDepthFirstVisitor to typecheck statements.
+
 ● **Helper.java** ​ - This file contains the helper functions such as distinct or getID
+
 ● **SymbolTable.java** ​- This is the symbol table implementation described later.
+
 ● **ClassSymbol.java** ​- This holds the implementation of a class symbol.
+
 ● **MethodSymbol.java** ​ - This holds the implementation of a method symbol.
+
 ● **Symbol.java** ​- This file is used to create symbols.
 
 
@@ -171,7 +178,9 @@ https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/Phase1-Type-Check
 Along with the phase 1 files we added 3 additional files:
 
 ● J2V.java ​ - Changed the typecheck.java file to J2V file and after the two type checking visitors are called instead of saying the checking was successful, we called the translation visitor and passed in the symbol table to print.
- ● Translation.java ​ - We extend the ​G​JNoArguDepthFirst ​in order to translate to vapor file
+
+● Translation.java ​ - We extend the ​G​JNoArguDepthFirst ​in order to translate to vapor file
+
 ● Printer.java ​ - This is used as a helper class in order to print to the vapor file.
 
 ### Translation
