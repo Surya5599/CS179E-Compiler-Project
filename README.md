@@ -51,7 +51,9 @@ pass in the second visitor object, along with the symboltable, that we fetch fro
 object. Once the type checking completes, we check if there are any errors, if so then we have a
 type error. If there are no errors, that completes the type checking.
 
-## How does our SymbolTable work?
+## How does our SymbolTable works?
+
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report1_1.png)
 
 In order to build the SymbolTable, we used this implementation that's described in the book[1].
 A class has fields and methods, and the methods have their own params and locals. So we
@@ -82,7 +84,9 @@ implemented inside the symbol table. We also created two private variables, curr
 currMethod, in order to keep track of which class or which method is currently being processed,
 so that when we build the symbol table we know, which class to add the fields and methods and
 which method to add the params and locals.
-Example of a function in FirstVisitor.java
+
+![Example of a function in FirstVisitor.java](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report1_4.png)
+
 This is one example of how the functions in first visitor work, this function looks at the
 ClassDeclaration node type and before processing the methods and variables inside, we first
 check if all id are distinct which we call using Helper.idDistinct and pass in, and same thing for
@@ -103,7 +107,9 @@ same thing goes for the 1, which is IntegerLiteral, and return int for that and 
 check if these two are correct. If at any point we don't find something in the symbol table or if a
 type doesn’t match the rule, we have a boolean that is set to true, which we check later in the
 typecheck.java.
-Example for a visit function within SecondVisitor.java
+
+![Example for a visit function within SecondVisitor.java](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report1_2.png)
+
 This is an example of the visit functions for the PlusExpression, where we look at the left side
 and the right side and call this getIDType, function which looks at the string passed in, and looks
 it up in the symbol table and if it exists it return the type of the object that exists in the current
@@ -131,6 +137,8 @@ NodeList which has the methods from the current class.
 
 ## Testing and Verification
 
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report1_3.png)
+
 We used the given test files to check our program, and oftentimes we also expanded on them in
 order to test specific functions as we created them.
 
@@ -157,10 +165,10 @@ To translate the java file to a vapor file, we extended another visitor GJNoArgu
 ### Project Overview and File Structure
 
 This part has the same file structure that was in phase 1, which can be found here:
-https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/Phase1-Type-Checking/Pha
-se1_report.pdf
-Along with the phase 1 files we added 3 additional files:
 
+https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/Phase1-Type-Checking/Phase1_report.pdf
+
+Along with the phase 1 files we added 3 additional files:
 
 ● J2V.java ​ - Changed the typecheck.java file to J2V file and after the two type checking visitors are called instead of saying the checking was successful, we called the translation visitor and passed in the symbol table to print.
  ● Translation.java ​ - We extend the ​G​JNoArguDepthFirst ​in order to translate to vapor file
@@ -171,6 +179,7 @@ Along with the phase 1 files we added 3 additional files:
 Once the translation visitor is called, the first thing it does it initializes, the private SymbolTable of the visitor. Then it calls the vtable, in order to define the data segments (const class definition with its methods) for each class except the main class. Once the data segments are created, we use the visit functions in order to process the java file and convert methods and statements into vapor language. This class is used to extract the information about a statement, and finally uses the printer class in order to convert the information into the vapor translation. Once we reach a Statement, we determine which type of statement it is and extract the needed information from it. For example, if its an assignment statement, we extract the variable from the left side, then the variable from the right side. Once that is extracted, we check if the variable is part of the class record if it is, we convert it to be used as a memory address by getting the offset. Once we have both of the variables, we pass this information to the printer class by calling the corresponding print function, which then creates variables for the needed parameters in the vapor language and prints the vapor language into the file. 
 This is the sample for the AssignmentStatement, which shows the implementation described above.
 
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report2_1.png)
 
 ### Record and v-Table Implementation
 
@@ -185,9 +194,16 @@ To build the record table the structure is similar to the v-table. It also uses 
 
 We created a printer class which is used to print to the vapor file, and contains the specification of what the vapor file looks like. We defined multiple different functions for specific for example, functions for if statements, while loops, method calls, object creation, operations and etc. This class also has multiple counters for different labels. We created a variable counter, label counter, null label counter, ifelse counter, and a while counter. This is just a simple integer counter which is used in the creation of any of the labels in order to not reuse labels throughout the program. There is also a depth counter, which is used to print the additional spaces when we are within a method call or if statements or while statements. All of the functions take in some String parameters based on which kind of function it is. Some of the functions have a return type of String, because when we do some operations, we want to be able to return the variable the answer is stored in. For example when we do Add(5 4), we set it equal to t.0 = Add(5 4), and return that t.0 so it can be used later for example to print or to  use it for other operations. Here is the example of add function.
 
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report2_2.png)
+
 Here is the example of array lookup:
+
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report2_3.png)
+
 Similar to the function above, we created multiple functions that print the vapor language.
 
 ## Testing and Verification
 
 For testing and verification purposes, we used the given test cases, which are shown as passing below, along with our own P.java file, which we adjusted to test specific functionality as we created them.
+
+![alt text](https://github.com/Surya5599/CS179E-Compiler-Project/blob/main/images/report2_4.png)
