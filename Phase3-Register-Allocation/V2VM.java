@@ -1,5 +1,8 @@
 import cs132.util.ProblemException;
 import cs132.vapor.parser.VaporParser;
+import cs132.vapor.ast.VDataSegment;
+import cs132.vapor.ast.VFunction;
+import cs132.vapor.ast.VInstr;
 import cs132.vapor.ast.VaporProgram;
 import cs132.vapor.ast.VBuiltIn.Op;
 
@@ -9,6 +12,30 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class V2VM {
+
+
+	public static void main(String[] args) throws IOException {
+		VaporProgram vp = parseVapor(System.in, System.err);
+		VDataSegment[] vData = vp.dataSegments;
+		VFunction[] vfunc = vp.functions;
+		TranslateVisitor tp = new TranslateVisitor();
+		convertDataSegments(vData);
+		convertFunctions(vfunc);
+		System.out.println("hi");
+
+	}
+
+	public static void convertDataSegments(VDataSegment[] vData) throws IOException{
+
+	}
+
+	public static void convertFunctions(VFunction[] vf) throws IOException{
+		for(VFunction x: vf){
+			System.out.println(x);
+		}
+	}
+
+
 	public static VaporProgram parseVapor(InputStream in, PrintStream err) throws IOException {
 		Op[] ops = {
 			Op.Add, Op.Sub, Op.MulS, Op.Eq, Op.Lt, Op.LtS,
@@ -30,11 +57,6 @@ public class V2VM {
 		}
 	
 		return tree;
-	}
-
-	public static void main(String[] args) throws IOException {
-		VaporProgram vp = parseVapor(System.in, System.err);
-		System.out.println("hi");
 	}
 
 }
