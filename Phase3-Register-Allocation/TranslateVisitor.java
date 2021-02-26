@@ -6,6 +6,7 @@ import cs132.vapor.ast.VBuiltIn;
 import cs132.vapor.ast.VCall;
 import cs132.vapor.ast.VGoto;
 import cs132.vapor.ast.VInstr;
+import cs132.vapor.ast.VLitInt;
 import cs132.vapor.ast.VMemRead;
 import cs132.vapor.ast.VMemWrite;
 import cs132.vapor.ast.VReturn;
@@ -13,6 +14,7 @@ import cs132.vapor.ast.VReturn;
 public class TranslateVisitor extends VInstr.Visitor<IOException> {
 
 	public void visit(VAssign a) throws IOException{
+		
 		System.out.println("hi1");
 	}
 
@@ -21,6 +23,10 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	}
 
 	public void visit(VBuiltIn c) throws IOException{
+
+		String reg = getCalleRegister(); //creates a register $t0
+		
+		System.out.println(reg + " = " + c.op.name + "(" + c.args[0].visit(this)  + ")");
 		System.out.println("h3");
 	}
 
@@ -41,7 +47,7 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	}
 
 	public void visit(VReturn c) throws IOException{
-		System.out.println("hi8");
+		System.out.println("ret");
 	}
 
 	
