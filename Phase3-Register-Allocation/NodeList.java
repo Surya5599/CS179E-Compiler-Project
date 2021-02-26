@@ -32,20 +32,27 @@ public class NodeList {
 		return nodes.toArray();
 	}
 	public void print(){
+		String output = "";
 		for (Node s : nodes){ 
-			System.out.println(s.getValue());
+			output = output + s.getValue() + "\n";
 			Object[] pre = s.pred().toArray();
 			Object[] suc = s.succ().toArray();
-			System.out.println("Pred");
+			output += "Pred: ";
 			for(int x = 0; x < pre.length; x++){
-				System.out.println(((Node)pre[x]).getValue());
+				output += ((Node)pre[x]).getValue() + ",";
 			}
-			System.out.println("Succ");
+			output += "\n";
+			output += "Succ: ";
 			for(int x = 0; x < suc.length; x++){
-				System.out.println(((Node)suc[x]).getValue());
+				output += ((Node)suc[x]).getValue() + ",";
 			}
-			System.out.println();
+			output += "\n";
+			output += "Use: " + s.use.toString();
+			output += "\n";
+			output += "Def: " + s.def.toString();
+			output += "\n \n";
 		}
+		System.out.println(output);
 	}
 
 

@@ -13,9 +13,11 @@ import cs132.vapor.ast.VGoto;
 import cs132.vapor.ast.VInstr;
 import cs132.vapor.ast.VLabelRef;
 import cs132.vapor.ast.VMemRead;
+import cs132.vapor.ast.VMemRef;
 import cs132.vapor.ast.VMemWrite;
 import cs132.vapor.ast.VOperand;
 import cs132.vapor.ast.VReturn;
+import cs132.vapor.ast.VVarRef;
 import cs132.vapor.ast.VaporProgram;
 import cs132.vapor.ast.VAddr.Var;
 import cs132.vapor.ast.VBuiltIn.Op;
@@ -101,26 +103,55 @@ public class V2VM {
 			curr.def.add(((VAssign)y).dest.toString());
 		}
 		else if(y instanceof VBranch){
-			curr.def.add(((VBranch)y).value.toString());
+			curr.use.add(((VBranch)y).value.toString());
 		}
 		else if(y instanceof VBuiltIn){
-			if(((VBuiltIn)y).dest != null)
+			VBuiltIn x = ((VBuiltIn)y);
+			if(x.dest != null){
 				curr.def.add(((VBuiltIn)y).dest.toString());
+			}
+			for(VOperand vO: x.args){
+				if(vO instanceof	VVarRef){
+					curr.use.add(vO.toString());
+				}
+			}
+			
 		}
 		else if(y instanceof VCall){
-
-		}
-		else if(y instanceof VGoto){
-
+			VCall x = ((VCall)y);
+			if(x.dest != null){
+				curr.def.add(((VCall)y).dest.toString());
+			}
+			curr.use.add(x.addr.toString());
+			for(VOperand vO: x.args){
+				if(vO instanceof	VVarRef){
+					curr.use.add(vO.toString());
+				}
+			}
 		}
 		else if(y instanceof VMemRead){
-
+			VMemRead read = (VMemRead)y;
+			curr.def.add(read.dest.toString());
+			if(read.source instanceof VMemRef.Global){
+				VMemRef.Global vmem = (VMemRef.Global)read.source;
+				curr.use.add(vmem.base.toString());
+			}
 		}
 		else if(y instanceof VMemWrite){
-			curr.def.add(((VMemWrite)y).base.var.toString());
+			VMemWrite x = ((VMemWrite)y);
+			if(x.dest instanceof VMemRef.Global){
+				VMemRef.Global vmem = (VMemRef.Global)x.dest;
+				curr.def.add(vmem.base.toString());
+			}
 		}
 		else if(y instanceof VReturn){
-
+			VReturn ret = ((VReturn)y);
+			if(ret.value != null){
+				if(ret.value instanceof VVarRef){
+					curr.use.add(ret.value.toString());
+				}
+				//curr.use.add(ret.value);
+			}		
 		}
 	}
 
