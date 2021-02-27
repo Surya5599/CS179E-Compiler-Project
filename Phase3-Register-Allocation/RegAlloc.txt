@@ -1,0 +1,197 @@
+----------------------------------------------------------------------
+The live-out of a node is the union of the live-in of its successors.
+If a successor wants it live when coming in, it should be live when it goes out from this node.
+
+If it is used here, it should be live-in.
+If it is live-out and it is not defined in this node, then it should be live-in to this node.
+
+A variable is live at a node if it is defined there (it is written) or it is live-in to the node (it might be read at this node or later nodes).
+
+----------------------------------------------------------------------
+Instead of local variables, we have 23 registers: $s0..$s7, $t0..$t8, $a0..$a3, $v0, $v1.
+To follow MIPS calling conventions, we use the registers as follows:
+$a0..$a3: reserved for argument passing
+$s0..$s7: general use callee-saved
+$t0..$t8: general use caller-saved
+$v0: returning a result from a call
+$v0, $v1: can also be used as temporary registers for loading values from the stack
+
+Each function has three stack arrays called in, out, and locals. The in and out arrays are for passing arguments between functions. The in array refers to the out array of the caller. The local array is for function-local storage that can be used for spilled registers. The sizes of these arrays are declared at the top of every function (instead of a parameter list).
+
+Each element of each array is a 4-byte word. The indexes into the array is the word-offset (not the byte offset). Array references can be used wherever memory references can be used. So in[1] refers to the second element of the in stack array.
+
+func Run [in 2, out 0, local 4]
+    $t1 = in[1]
+    local[3] = $t1
+    PrintString($t1)
+    $v0 = 1
+    ret
+
+Each frame for a function has three parts
+   In
+      The arguments of the call that are spilt to the stack.
+      This section is sometimes considered to be part of the caller stack.
+   Local
+      The local variables (that are spilt to the stack)  
+      The backup for the caller saved registers used by the function
+   Out
+      The backup for arguments passed by registers
+      Arguments that are spilled on the stack
+      The size of this array is the maximum number of arguments of the functions that this function calls.
+
+Registers are global to all functions (whereas local variables were local to a function activation).
+The $t variables are temporary caller-saved registers, while the $s registers are callee-saved. Each function saves the $s registers that it will use at the beginning of the function and saves the $t registers that it will need before calling another functions.
+
+
+On entry to a function
+   Saving the saved registers $s that the function uses
+
+On exit from a function
+   Assigning the return value to $v0
+   Restoring the saved registers $s
+
+
+Before a function call
+   Saving temporal registers $t that will be used after the call ¹
+   Saving the argument registers $a on the in stack 
+   Copying the arguments to the argument registers and out stack ²
+
+¹: Using the allocation map resulted from the register allocation algorithm and the out sets resulted from the liveness analysis, the sets of registers that are used after an instruction can be calculated. This set is used to determine the registers that should be saved before a function call.
+      
+²: Note that if arguments of the caller should be passed to callee, they should be read from the in stack as otherwise $a registers would be both read and written.
+
+
+After a function call
+   Restoring temporal registers
+   Restoring argument registers from the in stack
+
+----------------------------------------------------------------------
+Example:
+
+f (p) {
+    // Part 0: On entry -------------
+
+    // Part 1 -------------
+    x = 2;
+    r = x;
+    x1 = p;
+    x2 = 2;
+    x3 = 3;
+
+
+    // Part 2: Function call -------------
+    g (1, p, 3, 4, 5);     /* We know that x1, x2, x3 that are stored in $t0, $t1, $t2 are live-out. */
+    
+    // Part 3 -------------    
+    x = x1;
+    x = x2;
+    x = x3;
+
+    // Part 4: On exit -------------
+    ret 0;
+
+}
+
+Register Allocation:
+    x      $s0
+    x1    $t0
+    x2    $t1
+    x3    $t2
+    r       Spill 0
+
+
+Local array:
+    0    r
+    1    $s0
+    2    $t0
+    3    $t1
+    4    $t2
+
+----------------------------------------------------------------------
+Translation:
+
+func f [in 1, out 5, local 5]
+
+   // Part 0: On entry -------------
+   Local[1] = $s0
+
+    // Part 1 -------------
+    $s0 = 2
+    Local[0] = $s0
+    $t0 = $a0
+    $t1 = 2
+    $t2 = 3
+
+    // Part 2: : Function call -------------
+    Local[2] = $t0
+    Local[3] = $t1
+    Local[4] = $t2
+
+    In[0] = $a0
+
+    $a0 = 1
+    $a1 = In[0]
+    $a2 = 3
+    $a3 = 4
+    Out[4] = 5
+
+    Call g
+
+    $t0 = Local[2]
+    $t1 = Local[3]
+    $t2 = Local[4]
+
+    $a0 = In[0]
+
+    // Part 3 -------------
+    $s0 = $t0
+    $s0 = $t1
+    $s0 = $t2
+
+    // Part 4: : On exit -------------
+    $v0 = 0
+
+    $s0 = Local[1]
+
+    ret
+
+----------------------------------------------------------------------
+
+int g (int a, int b, int c, int d, int e) {
+   
+    int x = b + 2
+    int y = e + 3
+
+    ret 5
+
+}
+
+Register allocation:
+    x     $s1
+    y     $t1
+
+Local array
+    0  $s1
+
+----------------------------------------------------------------------
+Translation:
+    
+func f [in 5, out 0, local 1]
+
+    // On entry -------------
+    Local[4] = $s1
+   
+    // Body -------------
+    $s1 = $a1 + 2
+    $t1 = In[4] + 3
+
+    // On exit -------------
+    $v0 = 5
+
+    $s1 = Local[4]
+
+    ret
+
+----------------------------------------------------------------------
+
+

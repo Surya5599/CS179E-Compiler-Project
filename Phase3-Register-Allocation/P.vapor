@@ -2,7 +2,10 @@
 const vmt_Fac
   :Fac.ComputeFac
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 95e4875af3f1f9ac9ca9577aa06d35b4bbf7c008
 func Main()
   t.0 = HeapAllocZ(4)
   [t.0] = :vmt_Fac
@@ -28,3 +31,7 @@ func Fac.ComputeFac(this num)
     num_aux = MulS(num t.3)
   if1_end:
   ret num_aux
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 95e4875af3f1f9ac9ca9577aa06d35b4bbf7c008
