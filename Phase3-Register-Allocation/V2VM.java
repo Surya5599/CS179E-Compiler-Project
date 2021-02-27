@@ -3,6 +3,7 @@ import cs132.vapor.parser.VaporParser;
 import cs132.vapor.ast.VDataSegment;
 import cs132.vapor.ast.VFunction;
 import cs132.vapor.ast.VInstr;
+import cs132.vapor.ast.VOperand;
 import cs132.vapor.ast.VaporProgram;
 import cs132.vapor.ast.VBuiltIn.Op;
 
@@ -22,11 +23,17 @@ public class V2VM {
 		convertDataSegments(vData);
 		convertFunctions(vfunc);
 		System.out.println("hi");
+		
 
 	}
 
 	public static void convertDataSegments(VDataSegment[] vData) throws IOException{
-
+		for(VDataSegment a : vData){
+			System.out.println(a.ident);
+			for(VOperand m : a.values){
+				System.out.println(" " + m);
+			}
+		}
 	}
 
 	public static void convertFunctions(VFunction[] vf) throws IOException{
