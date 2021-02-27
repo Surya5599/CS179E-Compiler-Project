@@ -27,13 +27,16 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.YearMonth;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class V2VM {
 
 	public static void main(String[] args) throws IOException {
 		VaporProgram vp = parseVapor(System.in, System.err);
 		VDataSegment[] vData = vp.dataSegments;
-		VOperand[] methods = vData[0].values;
+		//VOperand[] methods = vData[0].values;
 		VFunction[] vfunc = vp.functions;
 		TranslateVisitor tp = new TranslateVisitor();
 		convertDataSegments(vData);
@@ -48,9 +51,32 @@ public class V2VM {
 	public static void convertFunctions(VFunction[] vf) throws IOException {
 
 		for (VFunction x : vf) {
-			Graph g = createCFG(x);
+			Graph g = createCFG(x); //create the CFG
+			HashMap<String, LivenessInterval> li = findLiveTime(g); //find the time interval for variables
 		}
 		System.out.println("hi");
+	}
+
+	private static HashMap<String, LivenessInterval> findLiveTime(Graph cfg) {
+		HashMap<String, LivenessInterval> li = new HashMap<String, LivenessInterval>();
+		List<Integer> key = cfg.getAllKey();
+		for (Integer i : key){
+			Node n = cfg.getNode(i);
+			n.actives.addAll(n.in);
+			n.actives.addAll(n.def);
+		}
+		for (Integer i : key){
+			for(String s: cfg.getNode(i).actives){
+				if(li.containsKey(s)){
+					li.get(s).setStop(i);
+				}
+				else{
+					li.put(s, new LivenessInterval(s, i, i));
+				}
+			}
+		}
+           
+		return li;
 	}
 
 	private static Graph createCFG(VFunction x) {
@@ -92,8 +118,48 @@ public class V2VM {
 					prev = curr;
 			}
 		}
+		findInOut(x, cfg);
 		cfg.show();
 		return cfg;
+	}
+
+	private static void findInOut(VFunction x, Graph cfg){
+		for (VInstr y : x.body) {
+			Node n = cfg.getNode(y.sourcePos.line);
+			n.in.clear();
+			n.out.clear();
+			n.inoutCheck = false;
+		}
+		do{
+			for (VInstr y : x.body) {
+				Node n = cfg.getNode(y.sourcePos.line);
+				HashSet<String> temp_in = new HashSet<String>(n.in);
+				HashSet<String> temp_out = new HashSet<String>(n.out);
+				n.in.addAll(n.out);
+				n.in.removeAll(n.def);
+				n.in.addAll(n.use);
+				Object[] suc = n.succ().toArray();
+				for(int i = 0; i < suc.length; i++){
+					int sucVal = ((Node)suc[i]).getValue();
+					Node sucNode = cfg.getNode(sucVal);
+					n.out.addAll(sucNode.in);
+				}
+				if(temp_in.equals(n.in) && temp_out.equals(n.out)){
+					n.inoutCheck = true;
+				}
+			}
+		}while(!checkDone(cfg));
+	}
+
+	public static boolean checkDone(Graph cfg) {
+		Object[] Nodes = cfg.nodes().toArray();
+		boolean done = true;
+		for(int i = 0; i < Nodes.length; i++){
+			if(((Node)Nodes[i]).inoutCheck == false){
+				done = false;
+			}
+		}
+		return done;
 	}
 
 	
@@ -141,7 +207,7 @@ public class V2VM {
 			VMemWrite x = ((VMemWrite)y);
 			if(x.dest instanceof VMemRef.Global){
 				VMemRef.Global vmem = (VMemRef.Global)x.dest;
-				curr.def.add(vmem.base.toString());
+				curr.use.add(vmem.base.toString());
 			}
 		}
 		else if(y instanceof VReturn){

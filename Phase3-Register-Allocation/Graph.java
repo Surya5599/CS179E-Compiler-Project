@@ -1,4 +1,5 @@
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class Graph {
 private NodeList cfg;
@@ -28,6 +29,19 @@ private NodeList cfg;
  public void show(){
 	cfg.print();
  }
+	public int size() {
+		return cfg.size();
+	}
+	public List<Integer> getAllKey(){
+		List<Integer> key
+            = new ArrayList<Integer>(); 
+		Object[] c = cfg.toArray();
+		for(int i = 0; i < c.length; i++) {
+			Node n = (Node) c[i];
+			key.add(n.getValue());
+		}
+		return key;
+	}
 }
 
 

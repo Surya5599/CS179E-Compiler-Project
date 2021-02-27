@@ -4,13 +4,13 @@ public class Node {
 
 	public NodeList succesors;
 	public NodeList predecessors;
-	private int outD;
-	private int inD;
 	private int value;
 	public HashSet<String> in;
 	public HashSet<String> out;
 	public HashSet<String> def;
 	public HashSet<String> use;
+	public boolean inoutCheck;
+	public HashSet<String> actives;
 
 	public Node(int x){
 		this.value = x;
@@ -20,6 +20,8 @@ public class Node {
 		this.out = new HashSet<String>();
 		this.def = new HashSet<String>();
 		this.use = new HashSet<String>();
+		this.actives = new HashSet<String>();
+		inoutCheck = false;
 	}
 
 	public int getValue(){
@@ -55,5 +57,31 @@ public class Node {
 	}
 	public String toString(){
 		return null;
+	}
+
+	public void print(){
+		String output = "";
+		output = output + this.getValue() + "\n";
+		Object[] pre = this.pred().toArray();
+		Object[] suc = this.succ().toArray();
+		output += "Pred: ";
+		for(int x = 0; x < pre.length; x++){
+			output += ((Node)pre[x]).getValue() + ",";
+		}
+		output += "\n";
+		output += "Succ: ";
+		for(int x = 0; x < suc.length; x++){
+			output += ((Node)suc[x]).getValue() + ",";
+		}
+		output += "\n";
+		output += "Use: " + this.use.toString();
+		output += "\n";
+		output += "Def: " + this.def.toString();
+		output += "\n";
+		output += "In: " + this.in.toString();
+		output += "\n";
+		output += "Out: " + this.out.toString();
+		output += "\n \n";
+		System.out.println(output);
 	}
  }
