@@ -59,17 +59,26 @@ public class LinearScan {
 	public  void ExpireOldIntervals(Map.Entry<String, LivenessInterval> i) {
 		active = sortByEnd(active);
 		List<String> removeArr = new ArrayList<>(); 
+		boolean removeSomething = false;
 		for (Map.Entry<String, LivenessInterval> j : active.entrySet()) {
-			if (j.getValue().getStop() >= (i.getValue()).getStart()) {
+			if (j.getValue().getStop() >= i.getValue().getStart()) {
+				if(removeSomething == true){
+					for(String s: removeArr){
+						active.remove(s);
+					}
+				}
 				return;
 			}
 			removeArr.add(j.getKey());
+			removeSomething = true;
 			Register r = registers.get(j.getKey());
 			freeRegisters.add(r);
 			sortFreeRegisters();
 		}
-		for(String s: removeArr){
-			active.remove(s);
+		if(removeSomething == true){
+			for(String s: removeArr){
+				active.remove(s);
+			}
 		}
 	}
 
