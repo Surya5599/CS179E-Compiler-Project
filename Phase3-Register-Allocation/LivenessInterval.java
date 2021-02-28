@@ -25,5 +25,21 @@ public class LivenessInterval{
 		return this.stop;
 	}
 
+	public int compareStart(LivenessInterval value) {
+		Integer s1 = this.start;
+		Integer s2 = value.getStart();
+		return s1.compareTo(s2);
+	}
+
+	public int compareStop(LivenessInterval value) {
+		Integer s1 = this.stop;
+		Integer s2 = value.getStop();
+		return s1.compareTo(s2);
+	}
+
+	public LivenessInterval getValue() {
+		return null;
+	}
+
 
 }

@@ -1,39 +1,42 @@
-import cs132.util.IndentPrinter;
-import cs132.util.ProblemException;
-import cs132.vapor.parser.VaporParser;
-
-import cs132.vapor.ast.*;
-
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.time.YearMonth;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.lang.Appendable;
+import java.util.Map;
+
+import cs132.util.IndentPrinter;
+import cs132.util.ProblemException;
+import cs132.vapor.ast.VBuiltIn.Op;
+import cs132.vapor.ast.VDataSegment;
+import cs132.vapor.ast.VFunction;
+import cs132.vapor.ast.VInstr;
+import cs132.vapor.ast.VOperand;
+import cs132.vapor.ast.VaporProgram;
+import cs132.vapor.parser.VaporParser;
 
 public class V2VM {
 
 	public static void main(String[] args) throws IOException {
 		VaporProgram vp = parseVapor(System.in, System.err);
 		VDataSegment[] vData = vp.dataSegments;
-		//VOperand[] methods = vData[0].values;
+		// VOperand[] methods = vData[0].values;
 		VFunction[] vfunc = vp.functions;
-		TranslateVisitor tp = new TranslateVisitor();
 		convertDataSegments(vData);
 		convertFunctions(vfunc);
 		System.out.println("hi");
-		
 
 	}
 
-	public static void convertDataSegments(VDataSegment[] vData) throws IOException{
-		for(VDataSegment a : vData){
+	public static void convertDataSegments(VDataSegment[] vData) throws IOException {
+		for (VDataSegment a : vData) {
 			System.out.println("const " + a.ident);
 			for(VOperand m : a.values){
 				System.out.println(" " + m);
 			}
+			System.out.println();
 		}
 	}
 
@@ -54,11 +57,23 @@ public class V2VM {
 				Then it returns a hashmap with the variable name and its liveness interval, so we can just be like 
 				li.get("t_0").getStart() or li.get("t_0").getStop()
 			*/
-			HashMap<String, LivenessInterval> li = fl.LivenessAnalysis();  
+			Map<String, LivenessInterval> li = fl.LivenessAnalysis();  
 			LinearScan ls = new LinearScan();
 			ls.performLinearScan(li); //now this will go and perform linear scan which is in file LinearScan
-			
+			int local = 0;
+			int in = 0;
+			int out = 0;
+
+			String s = "func " + x.ident + " [in " + in + ", out " + out + ", local " + local + "]";
+			System.out.println(s);
+			TranslateVisitor tp = new TranslateVisitor(ls.getRegisterMap());
+			VInstr[] main = x.body;
+			for(VInstr i: main){
+				i.accept(tp);
+			}
+			System.out.println();
 		}
+		
 	}
 
 	

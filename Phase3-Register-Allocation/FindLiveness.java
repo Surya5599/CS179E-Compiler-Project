@@ -8,14 +8,14 @@ public class FindLiveness {
 		this.function = x;
 	}
 
-	public HashMap<String, LivenessInterval> LivenessAnalysis(){
+	public Map<String, LivenessInterval> LivenessAnalysis(){
 		Graph g = createCFG(function); //create the CFG
-		HashMap<String, LivenessInterval> li = findLiveTime(g);
+		Map<String, LivenessInterval> li = findLiveTime(g);
 		return li;
 	}
 
-	private static HashMap<String, LivenessInterval> findLiveTime(Graph cfg) {
-		HashMap<String, LivenessInterval> li = new HashMap<String, LivenessInterval>();
+	private static Map<String, LivenessInterval> findLiveTime(Graph cfg) {
+		Map<String, LivenessInterval> li = new HashMap<String, LivenessInterval>();
 		List<Integer> key = cfg.getAllKey();
 		for (Integer i : key){
 			Node n = cfg.getNode(i);
@@ -146,11 +146,11 @@ public class FindLiveness {
 				curr.def.add(((VCall)y).dest.toString());
 			}
 			curr.use.add(x.addr.toString());
-			for(VOperand vO: x.args){
+			/*for(VOperand vO: x.args){
 				if(vO instanceof	VVarRef){
 					curr.use.add(vO.toString());
 				}
-			}
+			}*/
 		}
 		else if(y instanceof VMemRead){
 			VMemRead read = (VMemRead)y;

@@ -43,7 +43,7 @@ public class Node {
 	public int inDegree(){
 		return predecessors.size();
 	}
-	public int degree(){
+	/*public int degree(){
 		return null;
 	}
 	public boolean goesTo(Node n){
@@ -57,7 +57,7 @@ public class Node {
 	}
 	public String toString(){
 		return null;
-	}
+	}*/
 
 	public void print(){
 		String output = "";
