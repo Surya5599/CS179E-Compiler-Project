@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.Map;
 
+import cs132.vapor.ast.VAddr;
 import cs132.vapor.ast.VAssign;
 import cs132.vapor.ast.VBranch;
 import cs132.vapor.ast.VBuiltIn;
@@ -9,6 +10,7 @@ import cs132.vapor.ast.VGoto;
 import cs132.vapor.ast.VInstr;
 import cs132.vapor.ast.VLitInt;
 import cs132.vapor.ast.VMemRead;
+import cs132.vapor.ast.VMemRef;
 import cs132.vapor.ast.VMemWrite;
 import cs132.vapor.ast.VOperand;
 import cs132.vapor.ast.VReturn;
@@ -58,7 +60,8 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	}
 
 	private String printIndent(){
-		return String.format("%" + indent + "s", ""); 
+		int spaces = indent * 2;
+		return String.format("%" + spaces + "s", ""); 
 	}
 
 	public void visit(VCall c) throws IOException{
@@ -86,14 +89,23 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	}
 
 	public void visit(VMemRead b) throws IOException{
-		String s = register.get(b.dest.toString()).toString() + " = " + b.source.toString();
+			VMemRef.Global vmem = (VMemRef.Global)b.source;
+		String s = register.get(b.dest.toString()).toString() + " = [" + register.get(vmem.base.toString()).toString() + "]";
 		//String s = "VMemRead";
 		System.out.println(printIndent() + s);
 	}
 
 	public void visit(VMemWrite c) throws IOException{
-		//String s = "VMemWrite";
-		String s = register.get(c.dest.toString()).toString() + " = " + c.source.toString();
+		String s = "";
+		if(c.dest instanceof VMemRef.Global){
+			//VMemRef = (VMemRef.Global)c.dest;
+			VMemRef.Global vmem = (VMemRef.Global)c.dest;
+			s = "[" + register.get(vmem.base.toString()).toString() + "] = " + c.source.toString();
+		}
+		else{
+			s = register.get(c.dest.toString()).toString() + " = " + c.source.toString();
+		}
+
 		System.out.println(printIndent() + s);
 	}
 
@@ -101,9 +113,12 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 		String s = "ret";
 		if(c.value != null){
 			s = c.value.toString();
-			System.out.println(printIndent() + "ret " + s);
+			System.out.println(printIndent() + "ret " + register.get(s).toString());
 		}
-		System.out.println(printIndent() + s);
+		else{
+			System.out.println(printIndent() + "ret");
+		}
+
 	}
 
 	

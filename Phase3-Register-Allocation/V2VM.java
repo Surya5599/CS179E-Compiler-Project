@@ -30,7 +30,6 @@ public class V2VM {
 		VFunction[] vfunc = vp.functions;
 		convertDataSegments(vData);
 		convertFunctions(vfunc);
-		System.out.println("hi");
 
 	}
 
@@ -85,17 +84,17 @@ public class V2VM {
 			
 			String s = "func " + x.ident + " [in " + in + ", out " + out + ", local " + local + "]\n";
 			for(int loc = 0; loc < x.params.length - 1; loc++){
-				s += " local[" + loc + "] = " + "$s" + loc + "\n"; 
+				s += "  local[" + loc + "] = " + "$s" + loc + "\n"; 
 			}
 			Map<String, Register> registers = ls.getRegisterMap();
 			if(params.size() > 0){
 				for(int p = 0; p < params.size(); p++){
 					if(p < 4){
-						s += " " + registers.get(params.get(p)).toString() + " = " + "$a" + p + "\n";
+						s += "  " + registers.get(params.get(p)).toString() + " = " + "$a" + p + "\n";
 					}
 					else{
 						int y = p-4;
-						s += " " + registers.get(params.get(p)).toString() + " = " + "in[" + y + "]\n"  ;
+						s += "  " + registers.get(params.get(p)).toString() + " = " + "in[" + y + "]\n"  ;
 					}
 					
 				}
