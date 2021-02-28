@@ -30,6 +30,9 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 
 	public void visit(VBranch b) throws IOException {
 		String s = "VBranch";
+		if(b.positive){ // value?
+			s = b.target.toString();
+		}
 		System.out.println(printIndent() + s);
 	}
 
@@ -63,24 +66,30 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 		System.out.println(printIndent() + s);
 	}
 
-
+    
 	public void visit(VGoto a) throws IOException{
-		String s = "VGoto";
-		System.out.println(printIndent() + s);
+		String s = a.target.toString();
+		System.out.println(printIndent() + "goto " +  s);
 	}
 
 	public void visit(VMemRead b) throws IOException{
-		String s = "VMemRead";
+		String s = register.get(b.dest.toString()).toString() + " = " + b.source.toString();
+		//String s = "VMemRead";
 		System.out.println(printIndent() + s);
 	}
 
 	public void visit(VMemWrite c) throws IOException{
-		String s = "VMemWrite";
+		//String s = "VMemWrite";
+		String s = register.get(c.dest.toString()).toString() + " = " + c.source.toString();
 		System.out.println(printIndent() + s);
 	}
 
 	public void visit(VReturn c) throws IOException{
 		String s = "ret";
+		if(c.value != null){
+			s = c.value.toString();
+			System.out.println(printIndent() + "ret " + s);
+		}
 		System.out.println(printIndent() + s);
 	}
 
