@@ -76,20 +76,30 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 
 	public void visit(VCall c) throws IOException{
 		String s = "VCall";
-		String arguments = "";
-		/*for (VOperand a : c.args) {
-			if(a instanceof VVarRef){
-				arguments += register.get(c.toString()).toString() + " "; 
+		int i = 0;
+		for (VOperand a : c.args){
+			if(i < 4){
+				if(a instanceof VVarRef){
+					System.out.println(printIndent() + "$a" + i + " = " + register.get(a.toString()).toString()); 
+				}
+				else{
+					System.out.println(printIndent() + "$a" + i + " = " + a.toString());
+				}
 			}
 			else{
-				arguments += c.toString() + " ";
+				if(a instanceof VVarRef){
+					System.out.println(printIndent() + "out[" + i + "] = " + register.get(a.toString()).toString()); 
+				}
+				else{
+					System.out.println(printIndent() + "out[" + i + "] = " + a.toString());
+				}
 			}
+			i++;
 		}
-		arguments = arguments.trim();
 		if(c.dest != null){
-			s = c.dest.toString();
-		}*/
-		System.out.println(printIndent() + arguments + s); //?
+			s = register.get(c.dest.toString()).toString();
+		}
+		System.out.println(printIndent() + "call " + s); //?
 	}
 
     
