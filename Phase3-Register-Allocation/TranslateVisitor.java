@@ -63,7 +63,20 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 
 	public void visit(VCall c) throws IOException{
 		String s = "VCall";
-		System.out.println(printIndent() + s);
+		String arguments = "";
+		for (VOperand a : c.args) {
+			if(a instanceof VVarRef){
+				arguments += register.get(c.toString()).toString() + " "; 
+			}
+			else{
+				arguments += c.toString() + " ";
+			}
+		}
+		arguments = arguments.trim();
+		if(c.dest != null){
+			s = c.dest.toString();
+		}
+		System.out.println(printIndent() + arguments + s); //?
 	}
 
     
