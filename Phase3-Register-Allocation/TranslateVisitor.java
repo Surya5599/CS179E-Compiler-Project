@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import cs132.vapor.ast.VAddr;
@@ -19,10 +20,18 @@ import cs132.vapor.ast.VVarRef;
 public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	Map<String, Register> register;
 	private int indent;
+	Map<Integer, String> labels;
 
-	public TranslateVisitor(Map<String, Register> reg) {
+	public TranslateVisitor(Map<String, Register> reg, Map<Integer, String> labels2) {
 		this.register = reg;
 		this.indent = 1;
+		this.labels = labels2;
+	}
+
+	public void printLabel(int x){
+		if(labels.containsKey(x)){
+			System.out.println(labels.get(x) + ":");
+		}
 	}
 
 	public void visit(VAssign a) throws IOException {
@@ -31,10 +40,11 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	}
 
 	public void visit(VBranch b) throws IOException {
-		String s = "VBranch";
-		if(b.positive){ // value?
-			s = b.target.toString();
+		String s = "if " + register.get(b.value.toString()).toString() + " goto ";
+		if(b.target.toString() != null) {
+			s += b.target.toString();
 		}
+
 		System.out.println(printIndent() + s);
 	}
 
@@ -67,7 +77,7 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	public void visit(VCall c) throws IOException{
 		String s = "VCall";
 		String arguments = "";
-		for (VOperand a : c.args) {
+		/*for (VOperand a : c.args) {
 			if(a instanceof VVarRef){
 				arguments += register.get(c.toString()).toString() + " "; 
 			}
@@ -78,7 +88,7 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 		arguments = arguments.trim();
 		if(c.dest != null){
 			s = c.dest.toString();
-		}
+		}*/
 		System.out.println(printIndent() + arguments + s); //?
 	}
 
@@ -113,11 +123,10 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 		String s = "ret";
 		if(c.value != null){
 			s = c.value.toString();
-			System.out.println(printIndent() + "ret " + register.get(s).toString());
+			System.out.println(printIndent() + "$v0 = " + register.get(s).toString());
+	
 		}
-		else{
-			System.out.println(printIndent() + "ret");
-		}
+		System.out.println(printIndent() + "ret");
 
 	}
 

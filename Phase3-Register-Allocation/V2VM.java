@@ -6,12 +6,14 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.Appendable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cs132.util.IndentPrinter;
 import cs132.util.ProblemException;
 import cs132.vapor.ast.VBuiltIn.Op;
+import cs132.vapor.ast.VCodeLabel;
 import cs132.vapor.ast.VDataSegment;
 import cs132.vapor.ast.VFunction;
 import cs132.vapor.ast.VInstr;
@@ -103,8 +105,13 @@ public class V2VM {
 			
 
 			System.out.print(s);
-			TranslateVisitor tp = new TranslateVisitor(registers);
+			Map<Integer, String> labels = new HashMap<Integer, String>();
+			for(VCodeLabel lab: x.labels){
+				labels.put(lab.instrIndex, lab.ident);
+			}
+			TranslateVisitor tp = new TranslateVisitor(registers, labels);
 			VInstr[] main = x.body;
+			int index = 1;
 			for(VInstr i: main){
 				if(i instanceof VReturn){
 					for(int loc = 0; loc < x.params.length - 1; loc++){
@@ -113,6 +120,8 @@ public class V2VM {
 					}
 				}
 				i.accept(tp);
+				tp.printLabel(index);
+				index++;
 			}
 			System.out.println();
 		}
