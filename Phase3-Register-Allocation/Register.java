@@ -33,6 +33,9 @@ public class Register {
 		private List<Register> caller_saved;
 		private List<Register> callee_saved;
 		private List<Register> argument_passing;
+		private List<Register> free_callee;
+		private List<Register> free_caller;
+
 
 
 		private String name; 
@@ -52,12 +55,22 @@ public class Register {
 			return this.callee_saved;
 		}
 
+		public void setCallerSaved(List<Register> le){
+			this.free_caller.addAll(le);
+		}
+
+		public void setCalleeSaved(List<Register> le){
+			this.free_callee.addAll(le);
+		}
+
 
 
 
 		public Register(){
 			caller_saved = new ArrayList<Register>();
 			callee_saved = new ArrayList<Register>();
+			free_caller = new ArrayList<Register>();
+			free_callee = new ArrayList<Register>();
 			argument_passing = new ArrayList<Register>();
 
 			caller_saved.add(t0);

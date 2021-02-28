@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.Appendable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import cs132.util.IndentPrinter;
@@ -14,6 +16,8 @@ import cs132.vapor.ast.VDataSegment;
 import cs132.vapor.ast.VFunction;
 import cs132.vapor.ast.VInstr;
 import cs132.vapor.ast.VOperand;
+import cs132.vapor.ast.VReturn;
+import cs132.vapor.ast.VVarRef;
 import cs132.vapor.ast.VaporProgram;
 import cs132.vapor.parser.VaporParser;
 
@@ -43,6 +47,8 @@ public class V2VM {
 	public static void convertFunctions(VFunction[] vf) throws IOException {
 
 		for (VFunction x : vf) {
+
+
 			FindLiveness fl = new FindLiveness(x);  //create liveness and do analysis
 			/*Liveness Analysis Steps:
 				First build a CFG, of Nodes for each line in the function, 
@@ -57,18 +63,56 @@ public class V2VM {
 				Then it returns a hashmap with the variable name and its liveness interval, so we can just be like 
 				li.get("t_0").getStart() or li.get("t_0").getStop()
 			*/
-			Map<String, LivenessInterval> li = fl.LivenessAnalysis();  
-			LinearScan ls = new LinearScan();
-			ls.performLinearScan(li); //now this will go and perform linear scan which is in file LinearScan
-			int local = 0;
+			Map<String, LivenessInterval> li = fl.LivenessAnalysis(); 
+			int local = x.params.length - 1;
+			if(local < 0){
+				local = 0;
+			}
 			int in = 0;
+			if(x.params.length > 4){
+				in = x.params.length - 4;
+			}
+			
 			int out = 0;
 
-			String s = "func " + x.ident + " [in " + in + ", out " + out + ", local " + local + "]";
-			System.out.println(s);
-			TranslateVisitor tp = new TranslateVisitor(ls.getRegisterMap());
+
+			LinearScan ls = new LinearScan();
+			List<String> params = new ArrayList<>();
+			for(VVarRef para: x.params){
+				params.add(para.toString());
+			}
+			ls.performLinearScan(li, params); //now this will go and perform linear scan which is in file LinearScan
+			
+			String s = "func " + x.ident + " [in " + in + ", out " + out + ", local " + local + "]\n";
+			for(int loc = 0; loc < x.params.length - 1; loc++){
+				s += " local[" + loc + "] = " + "$s" + loc + "\n"; 
+			}
+			Map<String, Register> registers = ls.getRegisterMap();
+			if(params.size() > 0){
+				for(int p = 0; p < params.size(); p++){
+					if(p < 4){
+						s += " " + registers.get(params.get(p)).toString() + " = " + "$a" + p + "\n";
+					}
+					else{
+						int y = p-4;
+						s += " " + registers.get(params.get(p)).toString() + " = " + "in[" + y + "]\n"  ;
+					}
+					
+				}
+			}
+			
+			
+
+			System.out.print(s);
+			TranslateVisitor tp = new TranslateVisitor(registers);
 			VInstr[] main = x.body;
 			for(VInstr i: main){
+				if(i instanceof VReturn){
+					for(int loc = 0; loc < x.params.length - 1; loc++){
+						String p = "  $s" + loc + "= local[" + loc + "]";
+						System.out.println(p); 
+					}
+				}
 				i.accept(tp);
 			}
 			System.out.println();

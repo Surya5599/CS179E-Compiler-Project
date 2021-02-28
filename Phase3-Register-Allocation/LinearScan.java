@@ -1,6 +1,8 @@
 import java.util.*;
 import java.util.Map.Entry;
 
+import cs132.vapor.ast.VVarRef;
+
 public class LinearScan {
 
 	private Map<String, LivenessInterval> active;
@@ -11,9 +13,7 @@ public class LinearScan {
 	public LinearScan() {
 		active = new LinkedHashMap<String, LivenessInterval>();
 		registers = new LinkedHashMap<String, Register>();
-		Register r = new Register();
 		freeRegisters = new ArrayList<Register>();
-		freeRegisters.addAll(r.getCallerSaved());
 		stackLocation = new HashSet<>();
 	}
 
@@ -21,8 +21,25 @@ public class LinearScan {
 		return this.registers;
 	}
 
-	public void performLinearScan(Map<String, LivenessInterval> li) {
-		LinearScanRegisterAllocation(li);
+	public void performLinearScan(Map<String, LivenessInterval> li, List<String> params) {
+		Map<String, LivenessInterval> variables = new HashMap<>();
+		Map<String, LivenessInterval> parameters = new HashMap<>();
+		for (Map.Entry<String, LivenessInterval> i : li.entrySet()) {
+			if(params.contains(i.getKey()) && (!i.getKey().equals("this"))){
+				parameters.put(i.getKey(), i.getValue());
+			}
+			else{
+				variables.put(i.getKey(), i.getValue());
+			}
+		}
+		Register r = new Register();
+		freeRegisters.addAll(r.getCallerSaved());
+		LinearScanRegisterAllocation(variables);
+		r.setCallerSaved(freeRegisters);
+		freeRegisters.clear();
+		freeRegisters.addAll(r.getCalleeSaved());
+		LinearScanRegisterAllocation(parameters);
+		r.setCalleeSaved(freeRegisters);
 	}
 
 	public  void LinearScanRegisterAllocation(Map<String, LivenessInterval> li) {
