@@ -1,6 +1,0 @@
-25
---- Error (ProgramFault) ---
-invalid argument types: (integer1, data address<Heap.0>+0)
-  Main() line 9
-  LL.Start() line 434
-  List.Print() line 358
