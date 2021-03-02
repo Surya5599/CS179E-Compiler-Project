@@ -131,7 +131,7 @@ public class FindLiveness {
 				VAddr<VCodeLabel> lab = ((VGoto) y).target;
 				VAddr.Label<VCodeLabel> l = ((VAddr.Label<VCodeLabel>) lab);
 				VCodeLabel codeLab = l.label.getTarget();
-				Node jumpTo = null;
+				Node jumpTo = cfg.getNode(codeLab.sourcePos.line);
 				int jumpVal = 1;
 				while (jumpTo == null) {
 					jumpTo = cfg.getNode(codeLab.sourcePos.line + jumpVal);
@@ -213,6 +213,7 @@ public class FindLiveness {
 		List<String> arguments = new ArrayList<>();
 		for (VInstr i : x.body) {
 			if (i instanceof VCall) {
+				arguments.clear();
 				arguments.add(((VCall) i).dest.ident);
 				Node n = cfg.getNode(((VCall) i).sourcePos.line);
 				for (String s : n.out) {

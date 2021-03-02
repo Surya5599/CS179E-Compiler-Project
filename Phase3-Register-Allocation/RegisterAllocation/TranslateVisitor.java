@@ -24,6 +24,7 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 	private int indent;
 	Map<Integer, String> labels;
 	int locals;
+	boolean vUse = false;
 
 	public TranslateVisitor(Map<String, Register> reg, Map<Integer, String> labels2, int local) {
 		this.register = reg;
@@ -123,6 +124,10 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 			i++;
 		}
 		String output;
+		if (vUse == true) {
+			int x = locals - 1;
+			System.out.println(printIndent() + "$v0 = local[" + x + "]");
+		}
 		Register regis = register.get(c.addr.toString());
 		if (regis != null) {
 			output = regis.toString();
@@ -149,8 +154,16 @@ public class TranslateVisitor extends VInstr.Visitor<IOException> {
 		if (vmem.byteOffset > 0) {
 			offset = "+" + vmem.byteOffset;
 		}
-		String s = register.get(b.dest.toString()).toString() + " = [" + register.get(vmem.base.toString()).toString()
-				+ offset + "]";
+		String r1 = register.get(b.dest.toString()).toString();
+		String r2 = register.get(vmem.base.toString()).toString();
+		String more = "";
+		if (r1.contains("$v0") || r1.contains("$v1")) {
+			int loc = locals - 1;
+			more += "\n  local[" + loc + "] = " + r1 + "\n  ";
+			more += r1 + " = local[" + loc + "]";
+			vUse = true;
+		}
+		String s = r1 + " = [" + r2 + offset + "]" + more;
 		// String s = "VMemRead";
 		System.out.println(printIndent() + s);
 	}
