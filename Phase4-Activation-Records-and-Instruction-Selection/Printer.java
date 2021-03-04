@@ -4,7 +4,7 @@ public class Printer {
 
 	public void print(String s) {
 		String spaces = "";
-		for(int i = 0; i < indent; i++){
+		for (int i = 0; i < indent; i++) {
 			spaces += " ";
 		}
 		System.out.println(spaces + s);
@@ -16,6 +16,10 @@ public class Printer {
 
 	public void dedent() {
 		indent -= 2;
+	}
+
+	public void newLine() {
+		System.out.println();
 	}
 
 }

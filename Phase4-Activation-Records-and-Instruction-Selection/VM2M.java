@@ -3,6 +3,7 @@ import cs132.util.ProblemException;
 import cs132.vapor.parser.VaporParser;
 import cs132.vapor.ast.VAddr;
 import cs132.vapor.ast.VCodeLabel;
+import cs132.vapor.ast.VDataSegment;
 import cs132.vapor.ast.VFunction;
 import cs132.vapor.ast.VInstr;
 import cs132.vapor.ast.VaporProgram;
@@ -21,7 +22,59 @@ public class VM2M {
 	public static void main(String[] args) throws IOException {
 		VaporProgram vp = parseVapor(System.in, System.err);
 		Printer printer = new Printer();
-		TranslateFunction(vp.functions, printer, 0);
+		TranslateDataSegments(vp.dataSegments, printer);
+		TranslateFunction(vp.functions, printer);
+		PrintLastThings(printer);
+
+	}
+
+	private static void PrintLastThings(Printer p) {
+		p.print("_print:");
+		p.indent();
+		p.print("li $v0 1   # syscall: print integer");
+		p.print("syscall");
+		p.print("la $a0 _newline");
+		p.print("li $v0 4   # syscall: print string");
+		p.print("syscall");
+		p.print("jr $ra");
+		p.dedent();
+		p.newLine();
+		p.print("_error:");
+		p.indent();
+		p.print("li $v0 4   # syscall: print string");
+		p.print("syscall");
+		p.print("li $v0 10  # syscall: exit");
+		p.print("syscall");
+		p.newLine();
+		p.dedent();
+		p.print("_heapAlloc:");
+		p.indent();
+		p.print("li $v0 9   # syscall: sbrk");
+		p.print("syscall");
+		p.print("jr $ra");
+		p.dedent();
+		p.newLine();
+		p.print(".data");
+		p.print(".align 0");
+		p.print("_newline: .asciiz \"\\n\"");
+		p.print("_str0: .asciiz \"null pointer\\n\"");
+
+	}
+
+	private static void TranslateDataSegments(VDataSegment[] dataSegments, Printer p) {
+		// to indent do p.indent();
+		// to dedent do p.dedent();
+		// to print do p.print(String);
+		// to print new line p.newLine()
+
+		// see samples in Phase5Test
+		// the .data
+		// function names
+
+		// the .text
+		// i think its the same thing over and over
+
+		// make VM2M to run the thing
 
 	}
 
@@ -31,7 +84,7 @@ public class VM2M {
 		return stackFrame;
 	}
 
-	private static void TranslateFunction(VFunction[] functions, Printer p, int sRegs) throws IOException {
+	private static void TranslateFunction(VFunction[] functions, Printer p) throws IOException {
 		for (VFunction func : functions) {
 			p.print(func.ident + ":");
 			p.indent();
