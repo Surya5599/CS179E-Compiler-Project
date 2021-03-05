@@ -8,6 +8,12 @@ VM2M: VM2M.java
 		javac -cp "./:./Support/vapor-parser.jar" VM2M.java
 		java -cp "./:./Support/vapor-parser.jar" VM2M < P.vaporm > P.s
 
+check: VM2M.java Phase5Tests/ Phase4Tests/
+		javac -cp "./:./Support/vapor-parser.jar" VM2M.java
+		cp Phase4Tests/$(foo).vaporm P.vaporm
+		java -cp "./:./Support/vapor-parser.jar" VM2M < Phase4Tests/$(foo).vaporm > P.s
+		code --diff P.s Phase5Tests/$(foo).s
+
 clean:
 			rm -rf *.class
 			rm -rf *.tgz

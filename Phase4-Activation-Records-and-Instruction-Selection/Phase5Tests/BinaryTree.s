@@ -1,4 +1,4 @@
-.data
+make .data
 
 vmt_BT:
   BT.Start

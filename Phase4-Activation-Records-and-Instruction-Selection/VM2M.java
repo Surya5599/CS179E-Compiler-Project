@@ -19,6 +19,11 @@ import java.io.Writer;
 
 public class VM2M {
 
+	private static boolean pnt = false;
+	private static boolean heap = false;
+	private static boolean err1 = false;
+	private static boolean err2 = false;
+
 	public static void main(String[] args) throws IOException {
 		VaporProgram vp = parseVapor(System.in, System.err);
 		Printer printer = new Printer();
@@ -29,35 +34,47 @@ public class VM2M {
 	}
 
 	private static void PrintLastThings(Printer p) {
-		p.print("_print:");
-		p.indent();
-		p.print("li $v0 1   # syscall: print integer");
-		p.print("syscall");
-		p.print("la $a0 _newline");
-		p.print("li $v0 4   # syscall: print string");
-		p.print("syscall");
-		p.print("jr $ra");
-		p.dedent();
-		p.newLine();
-		p.print("_error:");
-		p.indent();
-		p.print("li $v0 4   # syscall: print string");
-		p.print("syscall");
-		p.print("li $v0 10  # syscall: exit");
-		p.print("syscall");
-		p.newLine();
-		p.dedent();
-		p.print("_heapAlloc:");
-		p.indent();
-		p.print("li $v0 9   # syscall: sbrk");
-		p.print("syscall");
-		p.print("jr $ra");
-		p.dedent();
-		p.newLine();
+		if (pnt) {
+			p.print("_print:");
+			p.indent();
+			p.print("li $v0 1   # syscall: print integer");
+			p.print("syscall");
+			p.print("la $a0 _newline");
+			p.print("li $v0 4   # syscall: print string");
+			p.print("syscall");
+			p.print("jr $ra");
+			p.dedent();
+			p.newLine();
+		}
+		if (err1 || err2) {
+			p.print("_error:");
+			p.indent();
+			p.print("li $v0 4   # syscall: print string");
+			p.print("syscall");
+			p.print("li $v0 10  # syscall: exit");
+			p.print("syscall");
+			p.newLine();
+			p.dedent();
+		}
+		if (heap) {
+			p.print("_heapAlloc:");
+			p.indent();
+			p.print("li $v0 9   # syscall: sbrk");
+			p.print("syscall");
+			p.print("jr $ra");
+			p.dedent();
+			p.newLine();
+		}
+
 		p.print(".data");
 		p.print(".align 0");
 		p.print("_newline: .asciiz \"\\n\"");
-		p.print("_str0: .asciiz \"null pointer\\n\"");
+		if (err1) {
+			p.print("_str0: .asciiz \"null pointer\\n\"");
+		}
+		if (err2) {
+			p.print("_str1: .asciiz \"array index out of bounds\\n\"");
+		}
 
 	}
 
@@ -93,8 +110,8 @@ public class VM2M {
 			p.print("subu $sp $sp " + findStack(func));
 			p.print("sw $ra -4($fp)");
 			int instrNum = 1;
+			TranslateVisitor tv = new TranslateVisitor(p);
 			for (VInstr inst : func.body) {
-				TranslateVisitor tv = new TranslateVisitor(p);
 				inst.accept(tv);
 				for (VCodeLabel vCode : func.labels) {
 					if (vCode.instrIndex == instrNum) {
@@ -104,6 +121,19 @@ public class VM2M {
 					}
 				}
 				instrNum++;
+			}
+
+			if (tv.err1) {
+				err1 = true;
+			}
+			if (tv.err2) {
+				err2 = true;
+			}
+			if (tv.print) {
+				pnt = true;
+			}
+			if (tv.heap) {
+				heap = true;
 			}
 			p.print("lw $ra -4($fp)");
 			p.print("lw $fp -8($fp)");
