@@ -15,10 +15,10 @@ check: VM2M.java Phase5Tests/ Phase4Tests/
 		code --diff P.s Phase5Tests/$(foo).s
 
 clean:
-			rm -rf *.class
-			rm -rf *.tgz
-			rm -rf RegisterAllocation/*.class
-			rm -rf Phase3Tests/Output
+		rm -rf *.class
+		rm -rf *.tgz
+		rm -rf RegisterAllocation/*.class
+		rm -rf Phase3Tests/Output
 
 
 test: VM2M.java 

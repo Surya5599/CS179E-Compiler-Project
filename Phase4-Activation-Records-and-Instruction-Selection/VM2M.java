@@ -6,6 +6,9 @@ import cs132.vapor.ast.VCodeLabel;
 import cs132.vapor.ast.VDataSegment;
 import cs132.vapor.ast.VFunction;
 import cs132.vapor.ast.VInstr;
+import cs132.vapor.ast.VLabelRef;
+import cs132.vapor.ast.VOperand;
+import cs132.vapor.ast.VVarRef;
 import cs132.vapor.ast.VaporProgram;
 import cs132.vapor.ast.VBuiltIn.Op;
 
@@ -92,7 +95,11 @@ public class VM2M {
 		// i think its the same thing over and over
 
 		// make VM2M to run the thing
-
+		for (VDataSegment data : dataSegments) {
+			for (VOperand.Static a : data.values) {
+				p.print(((VLabelRef) a).ident);
+			}
+		}
 	}
 
 	private static int findStack(VFunction func) {
