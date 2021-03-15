@@ -19,13 +19,13 @@ clean:
 		rm -rf *.tgz
 		rm -rf RegisterAllocation/*.class
 		rm -rf Phase3Tests/Output
+		rm -rf hw4/
 
 
 test: VM2M.java 
 	mkdir hw4
-	cp VM2M.java hw4/
-	cp -R RegisterAllocation/ hw4/RegisterAllocation
+	cp VM2M.java Printer.java TranslateVisitor.java hw4/
 	tar zcf hw4.tgz hw4/
 	rm -rf hw4
-	chmod +x Phase4Tests/run
-	Phase3Tests/./run Phase3Tests/SelfTestCases hw4.tgz
+	chmod +x Phase4Tester/run
+	Phase4Tester/./run Phase4Tester/SelfTestCases hw4.tgz
